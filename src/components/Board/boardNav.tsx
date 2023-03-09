@@ -9,7 +9,7 @@ import CustomButton from '../shared/CustomButton';
 import XIcon from 'public/icons/x.svg';
 import OIcon from 'public/icons/o.svg';
 
-import { PLAYERS_MARKS } from '../enums';
+import { PLAYERS_MARKS } from '../../types/enums';
 
 type BoardNavProps = {
   isSecondPlayerInGame: boolean;

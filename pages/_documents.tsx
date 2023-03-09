@@ -11,8 +11,6 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#4285f4" />
           <meta name="description" content="Multiplayer game - Tic Tac Toe" />
 
-          <title>Multiplayer game - Tic Tac Toe</title>
-
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <body>

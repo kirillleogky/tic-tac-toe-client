@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { useMutation, useSubscription } from '@apollo/client';
-import { Grid, Modal, Box, Skeleton } from '@mui/material';
-import { toast } from 'react-toastify';
+import { Box, Grid, Modal, Skeleton } from '@mui/material';
 
 import AddPlayerForm from '../shared/AddPlayerForm';
 import BoardNav from './boardNav';
@@ -10,17 +8,14 @@ import WinnerBoard from '../WinnerBoard';
 import XIcon from 'public/icons/x.svg';
 import OIcon from 'public/icons/o.svg';
 
-import getCurrentGameBoard from '../utils/getCurrentGameBoard';
+import { useCreatePlayer } from '../../hooks/useCreatePlayer';
+import { useMakeMove } from '../../hooks/useMakeMove';
+import { useJoinSecondPlayer } from '../../hooks/useJoinSecondPlayer';
+import { useSubscribeGame } from '../../hooks/useSubscribeGame';
 
-import { winnerType } from '../types';
-import { PLAYERS_MARKS } from '../enums';
+import { winnerType } from '../../types';
+import { PLAYERS_MARKS } from '../../types/enums';
 import { COLORS } from '../../styles/variables';
-
-import { MAKE_MOVE } from '../../api/mutations/makeMove';
-import { CREATE_PLAYER } from '../../api/mutations/createPlayer';
-import { SUBSCRIBE_GAME } from '../../api/subscriptions/subscribeGame';
-import { JOIN_SECOND_PLAYER } from '../../api/mutations/joinSecondPlayer';
-
 const Board = () => {
   const router = useRouter();
 
@@ -34,107 +29,46 @@ const Board = () => {
   const [isSecondPlayerInGame, setIsSecondPlayerInGame] = useState(false);
   const [playerWinner, setPlayerWinner] = useState<winnerType>();
   const [winningCombo, setWinningCombo] = useState<Number[]>([]);
+
+  const joinSecondPlayer = useJoinSecondPlayer(setIsLoading);
+  const createPlayer = useCreatePlayer(setIsLoading);
+  const makeMove = useMakeMove(setIsGameBoardLoading);
+  const { loading: subscriptionLoading, error: subscriptionError } =
+    useSubscribeGame(
+      setIsSecondPlayerInGame,
+      setWinningCombo,
+      boardId,
+      setPlayerWinner,
+      gameBoard,
+      setGameBoard,
+      setNextTurn,
+      setIsGameBoardLoading
+    );
   const handleOpenPlayerForm = () => setOpenPlayerForm(true);
   const handleClosePlayerForm = () => setOpenPlayerForm(false);
 
-  const { loading: subscriptionLoading, error: subscriptionError } =
-    useSubscription(SUBSCRIBE_GAME, {
-      variables: { board_id: boardId },
-      onData: ({ data }) => {
-        const { moves, turn, user1, user2, winner, winning_combo } =
-          data?.data?.boards || {};
+  const onCreatedPlayer = async (id: string) => {
+    setPlayerId(id);
 
-        if (user2) setIsSecondPlayerInGame(true);
-        if (winner) {
-          setWinningCombo(
-            winning_combo.map((position: string) => Number(position))
-          );
-
-          setTimeout(() => setPlayerWinner(winner), 5000);
-        }
-
-        setGameBoard(getCurrentGameBoard(user1, user2, gameBoard, moves));
-        setNextTurn(turn);
-
-        setIsGameBoardLoading(false);
-      },
-      onError: error => {
-        toast.error(error.message);
-      },
-    });
-
-  const [makeMove] = useMutation(MAKE_MOVE, {
-    onError: error => {
-      setIsGameBoardLoading(false);
-      toast.error(error.message);
-    },
-  });
-
-  const [joinSecondPlayer] = useMutation(JOIN_SECOND_PLAYER, {
-    onCompleted: data => {
-      const { id } = data?.update_boards.returning[0] || {};
-
-      if (id) {
-        router.push(
-          {
-            pathname: `/[boardId]`,
-            query: { boardId, createdPlayerId: playerId },
-          },
-          undefined,
-          { shallow: true }
-        );
-
-        setIsLoading(false);
-        handleClosePlayerForm();
-      }
-    },
-    onError: error => {
-      setIsLoading(false);
-      toast.error(error.message);
-    },
-  });
-
-  const [createPlayer] = useMutation(CREATE_PLAYER, {
-    onCompleted: data => {
-      const { id } = data?.insert_users.returning[0];
-
-      if (id) {
-        setPlayerId(id);
-
-        joinSecondPlayer({
-          variables: {
-            user_2_id: id,
-            board_id: boardId,
-          },
-        });
-      }
-    },
-    onError: error => {
-      setIsLoading(false);
-      toast.error(error.message);
-    },
-  });
-  const handleJoinGame = (playerName: string) => {
+    await joinSecondPlayer(id, boardId, handleClosePlayerForm);
+  };
+  const handleJoinGame = async (playerName: string) => {
     setIsLoading(true);
 
-    createPlayer({
-      variables: {
-        name: playerName,
-      },
-    });
+    await createPlayer(playerName, onCreatedPlayer);
   };
 
-  const handleMakeMove = (position: number) => {
+  const handleMakeMove = async (position: number) => {
     setIsGameBoardLoading(true);
 
-    makeMove({
-      variables: {
-        position: Number(position),
-        user_id: Number(playerId),
-        board_id: boardId,
-      },
-    });
+    await makeMove(Number(position), Number(playerId), boardId);
   };
+
+  useEffect(() => {
+    if (!subscriptionError && subscriptionLoading) {
+      setIsGameBoardLoading(subscriptionLoading);
+    }
+  }, [subscriptionLoading, subscriptionError]);
 
   useEffect(() => {
     if (!playerId) {
@@ -142,12 +76,6 @@ const Board = () => {
     }
   }, []);
 
-  useEffect(() => {
-    if (!subscriptionError && subscriptionLoading) {
-      setIsGameBoardLoading(subscriptionLoading);
-    }
-  }, [subscriptionLoading, subscriptionError]);
-  console.log(winningCombo);
   return (
     <>
       <Box width="100%">

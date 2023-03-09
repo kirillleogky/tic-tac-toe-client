@@ -1,5 +1,5 @@
 import { playerType, playerMoveType } from '../types';
-import { PLAYERS_MARKS } from '../enums';
+import { PLAYERS_MARKS } from '../types/enums';
 const getCurrentGameBoard = (
   user1: playerType,
   user2: playerType | null,
