@@ -11,10 +11,9 @@ import { useCreateGameBoard } from '../../hooks/useCreateGameBoard';
 
 const Main = () => {
   const [openPlayerForm, setOpenPlayerForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
-  const createPlayer = useCreatePlayer(setIsLoading);
-  const createGameBoard = useCreateGameBoard(setIsLoading);
+  const { createPlayer, isCreatePlayerLoading } = useCreatePlayer();
+  const { createGameBoard, isCreateGameBoardLoading } = useCreateGameBoard();
 
   const handleOpenPlayerForm = () => setOpenPlayerForm(true);
   const handleClosePlayerForm = () => setOpenPlayerForm(false);
@@ -24,8 +23,6 @@ const Main = () => {
   };
 
   const handleStartGame = async (playerName: string) => {
-    setIsLoading(true);
-
     await createPlayer(playerName, onCreatedPlayer);
   };
 
@@ -56,7 +53,7 @@ const Main = () => {
       <Modal open={openPlayerForm} onClose={handleClosePlayerForm}>
         <AddPlayerForm
           onSubmit={handleStartGame}
-          isLoading={isLoading}
+          isLoading={isCreatePlayerLoading || isCreateGameBoardLoading}
           formSubmitLabel="Start game"
         />
       </Modal>

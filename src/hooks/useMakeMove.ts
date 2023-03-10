@@ -3,17 +3,14 @@ import { toast } from 'react-toastify';
 
 import { MAKE_MOVE } from '../api/mutations/makeMove';
 
-export const useMakeMove = (
-  setIsGameBoardLoading: (isGameBoardLoading: boolean) => void
-) => {
-  const [makeMoveMutation] = useMutation(MAKE_MOVE, {
+export const useMakeMove = () => {
+  const [makeMoveMutation, { loading }] = useMutation(MAKE_MOVE, {
     onError: error => {
-      setIsGameBoardLoading(false);
       toast.error(error.message);
     },
   });
 
-  return async (
+  const makeMove = async (
     position: number,
     playerId: number,
     boardId: string | string[] | undefined
@@ -25,5 +22,10 @@ export const useMakeMove = (
         board_id: boardId,
       },
     });
+  };
+
+  return {
+    makeMove,
+    isMakeMoveLoading: loading,
   };
 };

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { Box, Grid, Modal, Skeleton } from '@mui/material';
 
 import AddPlayerForm from '../shared/AddPlayerForm';
-import BoardNav from './boardNav';
+import BoardNav from './BoardNav';
 import WinnerBoard from '../WinnerBoard';
 import XIcon from 'public/icons/x.svg';
 import OIcon from 'public/icons/o.svg';
@@ -21,7 +21,6 @@ const Board = () => {
 
   const { createdPlayerId, boardId } = router.query || {};
   const [openPlayerForm, setOpenPlayerForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isGameBoardLoading, setIsGameBoardLoading] = useState(false);
   const [playerId, setPlayerId] = useState(createdPlayerId);
   const [nextTurn, setNextTurn] = useState('');
@@ -30,10 +29,10 @@ const Board = () => {
   const [playerWinner, setPlayerWinner] = useState<winnerType>();
   const [winningCombo, setWinningCombo] = useState<Number[]>([]);
 
-  const joinSecondPlayer = useJoinSecondPlayer(setIsLoading);
-  const createPlayer = useCreatePlayer(setIsLoading);
-  const makeMove = useMakeMove(setIsGameBoardLoading);
-  const { loading: subscriptionLoading, error: subscriptionError } =
+  const { joinSecondPlayer, isJoinSecondPlayerLoading } = useJoinSecondPlayer();
+  const { createPlayer, isCreatePlayerLoading } = useCreatePlayer();
+  const { makeMove, isMakeMoveLoading } = useMakeMove();
+  const { loading: isBoardSubscriptionLoading, error: boardSubscriptionError } =
     useSubscribeGame(
       setIsSecondPlayerInGame,
       setWinningCombo,
@@ -41,8 +40,7 @@ const Board = () => {
       setPlayerWinner,
       gameBoard,
       setGameBoard,
-      setNextTurn,
-      setIsGameBoardLoading
+      setNextTurn
     );
   const handleOpenPlayerForm = () => setOpenPlayerForm(true);
   const handleClosePlayerForm = () => setOpenPlayerForm(false);
@@ -53,22 +51,30 @@ const Board = () => {
     await joinSecondPlayer(id, boardId, handleClosePlayerForm);
   };
   const handleJoinGame = async (playerName: string) => {
-    setIsLoading(true);
-
     await createPlayer(playerName, onCreatedPlayer);
   };
 
   const handleMakeMove = async (position: number) => {
-    setIsGameBoardLoading(true);
-
     await makeMove(Number(position), Number(playerId), boardId);
   };
 
   useEffect(() => {
-    if (!subscriptionError && subscriptionLoading) {
-      setIsGameBoardLoading(subscriptionLoading);
+    const isLoading =
+      isJoinSecondPlayerLoading ||
+      isCreatePlayerLoading ||
+      isMakeMoveLoading ||
+      isBoardSubscriptionLoading;
+
+    if (!boardSubscriptionError) {
+      setIsGameBoardLoading(isLoading);
     }
-  }, [subscriptionLoading, subscriptionError]);
+  }, [
+    isJoinSecondPlayerLoading,
+    isCreatePlayerLoading,
+    isMakeMoveLoading,
+    isBoardSubscriptionLoading,
+    boardSubscriptionError,
+  ]);
 
   useEffect(() => {
     if (!playerId) {
@@ -169,7 +175,7 @@ const Board = () => {
       <Modal open={openPlayerForm} onClose={handleClosePlayerForm}>
         <AddPlayerForm
           onSubmit={handleJoinGame}
-          isLoading={isLoading}
+          isLoading={isJoinSecondPlayerLoading || isCreatePlayerLoading}
           formSubmitLabel="Join game"
         />
       </Modal>

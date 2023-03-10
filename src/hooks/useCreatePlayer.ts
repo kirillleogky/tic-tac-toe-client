@@ -3,27 +3,33 @@ import { toast } from 'react-toastify';
 
 import { CREATE_PLAYER } from '../api/mutations/createPlayer';
 
-export const useCreatePlayer = (setIsLoading: (isLoading: boolean) => void) => {
-  const [createPlayerMutation] = useMutation(CREATE_PLAYER, {
+export const useCreatePlayer = () => {
+  const [createPlayerMutation, { loading }] = useMutation(CREATE_PLAYER, {
     onError: error => {
-      setIsLoading(false);
       toast.error(error.message);
     },
   });
 
-  return async (playerName: string, onCreatedPlayer: (id: string) => void) => {
-    const { data } = await createPlayerMutation({
+  const createPlayer = async (
+    playerName: string,
+    onCreatedPlayer: (id: string) => void
+  ) => {
+    await createPlayerMutation({
       variables: {
         name: playerName,
       },
+      onCompleted: async data => {
+        const { id } = data?.insert_users?.returning[0] || {};
+
+        if (id) {
+          await onCreatedPlayer(id);
+        }
+      },
     });
+  };
 
-    if (data) {
-      const { id } = data?.insert_users.returning[0];
-
-      if (id) {
-        await onCreatedPlayer(id);
-      }
-    }
+  return {
+    createPlayer,
+    isCreatePlayerLoading: loading,
   };
 };

@@ -1,35 +1,41 @@
-import {useRouter} from 'next/router';
-import {useMutation} from '@apollo/client';
-import {toast} from 'react-toastify';
+import { useRouter } from 'next/router';
+import { useMutation } from '@apollo/client';
+import { toast } from 'react-toastify';
 
-import {CREATE_GAME_BOARD} from '../api/mutations/createGameBoard';
+import { CREATE_GAME_BOARD } from '../api/mutations/createGameBoard';
 
-export const useCreateGameBoard = (
-  setIsLoading: (isLoading: boolean) => void
-) => {
+export const useCreateGameBoard = () => {
   const router = useRouter();
 
-  const [createGameBoardMutation] = useMutation(CREATE_GAME_BOARD, {
-    onError: error => {
-      setIsLoading(false);
-      toast.error(error.message);
-    },
-  });
+  const [createGameBoardMutation, { loading }] = useMutation(
+    CREATE_GAME_BOARD,
+    {
+      onError: error => {
+        toast.error(error.message);
+      },
+    }
+  );
 
-  return async (createdPlayerId: string) => {
-    const {data} = await createGameBoardMutation({
+  const createGameBoard = async (createdPlayerId: string) => {
+    await createGameBoardMutation({
       variables: {
         user_id: createdPlayerId,
       },
+      onCompleted: data => {
+        const { id } = data?.insert_boards?.returning[0] || {};
+
+        if (id) {
+          router.push({
+            pathname: `/[boardId]`,
+            query: { boardId: id, createdPlayerId },
+          });
+        }
+      },
     });
+  };
 
-    if (data) {
-      const {id} = data?.insert_boards.returning[0];
-
-      router.push({
-        pathname: `/[boardId]`,
-        query: {boardId: id, createdPlayerId},
-      });
-    }
+  return {
+    createGameBoard,
+    isCreateGameBoardLoading: loading,
   };
 };

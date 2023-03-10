@@ -14,8 +14,7 @@ export const useSubscribeGame = (
   setPlayerWinner: (playerWinner: winnerType) => void,
   gameBoard: Array<string>,
   setGameBoard: (gameBoard: Array<string>) => void,
-  setNextTurn: (nextTurn: string) => void,
-  setIsGameBoardLoading: (isGameBoardLoading: boolean) => void
+  setNextTurn: (nextTurn: string) => void
 ) =>
   useSubscription(SUBSCRIBE_GAME, {
     variables: { board_id: boardId },
@@ -33,8 +32,6 @@ export const useSubscribeGame = (
 
       setGameBoard(getCurrentGameBoard(user1, user2, gameBoard, moves));
       setNextTurn(turn);
-
-      setIsGameBoardLoading(false);
     },
     onError: error => {
       toast.error(error.message);
