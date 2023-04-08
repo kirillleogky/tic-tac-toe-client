@@ -18,7 +18,7 @@ const Main = () => {
   const handleOpenPlayerForm = () => setOpenPlayerForm(true);
   const handleClosePlayerForm = () => setOpenPlayerForm(false);
 
-  const onCreatedPlayer = async (id: string) => {
+  const onCreatedPlayer = async (id: number) => {
     await createGameBoard(id);
   };
 

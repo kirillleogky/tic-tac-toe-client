@@ -12,7 +12,7 @@ export const useCreatePlayer = () => {
 
   const createPlayer = async (
     playerName: string,
-    onCreatedPlayer: (id: string) => void
+    onCreatedPlayer: (id: number) => void
   ) => {
     await createPlayerMutation({
       variables: {

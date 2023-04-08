@@ -16,7 +16,7 @@ export const useCreateGameBoard = () => {
     }
   );
 
-  const createGameBoard = async (createdPlayerId: string) => {
+  const createGameBoard = async (createdPlayerId: number) => {
     await createGameBoardMutation({
       variables: {
         user_id: createdPlayerId,

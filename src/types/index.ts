@@ -10,3 +10,8 @@ export type playerMoveType = {
 };
 
 export type winnerType = 'x' | 'o' | 'draw';
+
+export type boardPageQueryType = {
+  createdPlayerId: string;
+  boardId: string;
+};

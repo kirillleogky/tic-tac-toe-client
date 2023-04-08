@@ -13,16 +13,17 @@ import { useMakeMove } from '../../hooks/useMakeMove';
 import { useJoinSecondPlayer } from '../../hooks/useJoinSecondPlayer';
 import { useSubscribeGame } from '../../hooks/useSubscribeGame';
 
-import { winnerType } from '../../types';
+import { boardPageQueryType, winnerType } from '../../types';
 import { PLAYERS_MARKS } from '../../types/enums';
 import { COLORS } from '../../styles/variables';
 const Board = () => {
   const router = useRouter();
 
-  const { createdPlayerId, boardId } = router.query || {};
+  const { createdPlayerId, boardId } =
+    (router.query as boardPageQueryType) || {};
   const [openPlayerForm, setOpenPlayerForm] = useState(false);
   const [isGameBoardLoading, setIsGameBoardLoading] = useState(false);
-  const [playerId, setPlayerId] = useState(createdPlayerId);
+  const [playerId, setPlayerId] = useState(Number(createdPlayerId));
   const [nextTurn, setNextTurn] = useState('');
   const [gameBoard, setGameBoard] = useState(Array(9).fill(''));
   const [isSecondPlayerInGame, setIsSecondPlayerInGame] = useState(false);
@@ -45,7 +46,7 @@ const Board = () => {
   const handleOpenPlayerForm = () => setOpenPlayerForm(true);
   const handleClosePlayerForm = () => setOpenPlayerForm(false);
 
-  const onCreatedPlayer = async (id: string) => {
+  const onCreatedPlayer = async (id: number) => {
     setPlayerId(id);
 
     await joinSecondPlayer(id, boardId, handleClosePlayerForm);

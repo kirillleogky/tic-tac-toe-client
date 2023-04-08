@@ -1,6 +1,6 @@
-import { gql } from '@apollo/client';
+import { graphql } from '../../gql';
 
-export const JOIN_SECOND_PLAYER = gql`
+export const JOIN_SECOND_PLAYER = graphql(`
   mutation JOIN_SECOND_PLAYER($user_2_id: Int, $board_id: uuid!) {
     update_boards(
       where: {
@@ -16,4 +16,4 @@ export const JOIN_SECOND_PLAYER = gql`
       }
     }
   }
-`;
+`);

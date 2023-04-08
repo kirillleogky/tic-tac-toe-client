@@ -17,7 +17,7 @@ export const useJoinSecondPlayer = () => {
   );
 
   const joinSecondPlayer = async (
-    secondPlayerId: string,
+    secondPlayerId: number,
     boardId: string | string[] | undefined,
     onJoinSecondPlayer: () => void
   ) => {

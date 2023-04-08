@@ -27,11 +27,13 @@ export const useSubscribeGame = (
           winning_combo.map((position: string) => Number(position))
         );
 
-        setTimeout(() => setPlayerWinner(winner), 5000);
+        setTimeout(() => setPlayerWinner(winner as winnerType), 5000);
       }
 
-      setGameBoard(getCurrentGameBoard(user1, user2, gameBoard, moves));
-      setNextTurn(turn);
+      if (turn && user1 && user2) {
+        setGameBoard(getCurrentGameBoard(user1, user2, gameBoard, moves));
+        setNextTurn(turn);
+      }
     },
     onError: error => {
       toast.error(error.message);

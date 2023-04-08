@@ -13,7 +13,7 @@ export const useMakeMove = () => {
   const makeMove = async (
     position: number,
     playerId: number,
-    boardId: string | string[] | undefined
+    boardId: string
   ) => {
     await makeMoveMutation({
       variables: {

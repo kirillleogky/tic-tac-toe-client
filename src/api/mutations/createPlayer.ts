@@ -1,6 +1,6 @@
-import { gql } from '@apollo/client';
+import { graphql } from '../../gql';
 
-export const CREATE_PLAYER = gql`
+export const CREATE_PLAYER = graphql(`
   mutation CREATE_PLAYER($name: String) {
     insert_users(objects: { name: $name }) {
       returning {
@@ -8,4 +8,4 @@ export const CREATE_PLAYER = gql`
       }
     }
   }
-`;
+`);

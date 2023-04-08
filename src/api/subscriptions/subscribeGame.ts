@@ -1,6 +1,6 @@
-import { gql } from '@apollo/client';
+import { graphql } from '../../gql';
 
-export const SUBSCRIBE_GAME = gql`
+export const SUBSCRIBE_GAME = graphql(`
   subscription SUBSCRIBE_GAME($board_id: uuid!) {
     boards: boards_by_pk(id: $board_id) {
       id
@@ -22,4 +22,4 @@ export const SUBSCRIBE_GAME = gql`
       }
     }
   }
-`;
+`);
