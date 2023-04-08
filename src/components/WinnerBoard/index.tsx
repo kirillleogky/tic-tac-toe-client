@@ -1,10 +1,10 @@
 import { Grid, Typography } from '@mui/material';
 
-import winnerIcon from '../../constants/winnerIcon';
+import { winnerIcon } from '../shared/PlayerIcons';
 
 import { winnerType } from '../../types';
 import { WINNER } from '../../types/enums';
-import { COLORS } from '../../styles/variables';
+import { BorderRadius, COLORS } from '../../styles/variables';
 
 type WinnerBoardProps = {
   winner: winnerType;
@@ -15,7 +15,7 @@ const WinnerBoard = ({ winner }: WinnerBoardProps) => (
     sx={{
       height: '100%',
       backgroundColor: COLORS.white,
-      borderRadius: '60px',
+      borderRadius: BorderRadius.extraLarge,
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',

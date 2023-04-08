@@ -4,7 +4,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import CustomButton from '../CustomButton';
 
-import { COLORS } from '../../../styles/variables';
+import { BorderRadius, COLORS } from '../../../styles/variables';
 
 type AddPlayerFormValues = {
   playerName: string;
@@ -36,7 +36,7 @@ const AddPlayerForm = forwardRef(
           transform: 'translate(-50%, -50%)',
           backgroundColor: COLORS.white,
           border: `2px solid ${COLORS.lightOrange}`,
-          borderRadius: 4,
+          borderRadius: BorderRadius.extraSmall,
           boxShadow: '0px 2px 4px rgba(88, 32, 0, 0.1)',
           p: 10,
           display: 'flex',

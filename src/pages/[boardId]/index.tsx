@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next';
-import apolloClient from '../../src/api/apollo-client';
-import { GET_BOARD_GAME } from '../../src/api/queries/getBoardGame';
-import NotFound from '../../src/components/NotFound';
-import Board from '../../src/components/Board';
+import apolloClient from '../../api/apollo-client';
+import { GET_BOARD_GAME } from '../../api/queries/getBoardGame';
+import NotFound from '../../components/NotFound';
+import Board from '../../components/Board';
 
 type GameBoardProps = {
   fetchedBoardGame: string;

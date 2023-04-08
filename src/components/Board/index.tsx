@@ -1,21 +1,21 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box, Grid, Modal, Skeleton } from '@mui/material';
+import { Box, Modal, Skeleton } from '@mui/material';
 
 import AddPlayerForm from '../shared/AddPlayerForm';
 import BoardNav from './BoardNav';
 import WinnerBoard from '../WinnerBoard';
-import XIcon from 'public/icons/x.svg';
-import OIcon from 'public/icons/o.svg';
+import GameBoard from './GameBoard';
 
 import { useCreatePlayer } from '../../hooks/useCreatePlayer';
 import { useMakeMove } from '../../hooks/useMakeMove';
 import { useJoinSecondPlayer } from '../../hooks/useJoinSecondPlayer';
 import { useSubscribeGame } from '../../hooks/useSubscribeGame';
 
+import { INITIAL_GAME_BOARD_LENGTH } from '../../constants';
+
 import { boardPageQueryType, winnerType } from '../../types';
-import { PLAYERS_MARKS } from '../../types/enums';
-import { COLORS } from '../../styles/variables';
+import { BorderRadius, COLORS } from '../../styles/variables';
 const Board = () => {
   const router = useRouter();
 
@@ -25,7 +25,9 @@ const Board = () => {
   const [isGameBoardLoading, setIsGameBoardLoading] = useState(false);
   const [playerId, setPlayerId] = useState(Number(createdPlayerId));
   const [nextTurn, setNextTurn] = useState('');
-  const [gameBoard, setGameBoard] = useState(Array(9).fill(''));
+  const [gameBoard, setGameBoard] = useState(() =>
+    Array(INITIAL_GAME_BOARD_LENGTH).fill('')
+  );
   const [isSecondPlayerInGame, setIsSecondPlayerInGame] = useState(false);
   const [playerWinner, setPlayerWinner] = useState<winnerType>();
   const [winningCombo, setWinningCombo] = useState<Number[]>([]);
@@ -98,60 +100,11 @@ const Board = () => {
             {playerWinner ? (
               <WinnerBoard winner={playerWinner} />
             ) : (
-              <Grid
-                container
-                spacing={'2px'}
-                sx={{
-                  height: '100%',
-                  position: 'relative',
-                }}
-              >
-                {gameBoard.map((label, index) => (
-                  <Grid item xs={4} key={index} height="220px">
-                    <Box
-                      sx={{
-                        width: '100%',
-                        height: '100%',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: COLORS.white,
-                        borderTopLeftRadius: index === 0 ? '60px' : 0,
-                        borderTopRightRadius: index === 2 ? '60px' : 0,
-                        borderBottomLeftRadius: index === 6 ? '60px' : 0,
-                        borderBottomRightRadius: index === 8 ? '60px' : 0,
-                        WebkitAnimation: winningCombo.includes(index)
-                          ? 'successBlink 1s infinite'
-                          : '',
-                        animation: winningCombo.includes(index)
-                          ? 'successBlink 1s infinite'
-                          : '',
-                        '@-webkit-keyframes successBlink': {
-                          '0%, 49%': {
-                            backgroundColor: COLORS.white,
-                          },
-                          '50%, 100%': {
-                            backgroundColor: COLORS.green,
-                          },
-                        },
-                        ':hover': {
-                          cursor: 'pointer',
-                          backgroundColor: COLORS.extraLightBlue,
-                        },
-                        ':active': {
-                          cursor: 'pointer',
-                          backgroundColor: COLORS.lightBlue,
-                        },
-                      }}
-                      onClick={() => handleMakeMove(index)}
-                    >
-                      {label === PLAYERS_MARKS.X && <XIcon width="140px" />}
-                      {label === PLAYERS_MARKS.O && <OIcon width="140px" />}
-                    </Box>
-                  </Grid>
-                ))}
-                <Box />
-              </Grid>
+              <GameBoard
+                gameBoard={gameBoard}
+                handleMakeMove={handleMakeMove}
+                winningCombo={winningCombo}
+              />
             )}
           </Box>
         ) : (
@@ -163,7 +116,7 @@ const Board = () => {
             sx={{
               backgroundColor: COLORS.lightBlue,
               m: '0 auto',
-              borderRadius: '60px',
+              borderRadius: BorderRadius.extraLarge,
             }}
           />
         )}

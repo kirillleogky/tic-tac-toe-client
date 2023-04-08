@@ -6,19 +6,25 @@ const getCurrentGameBoard = (
   gameBoard: Array<string>,
   moves?: Array<playerMoveType>
 ) => {
-  const { id: user1Id } = user1 || {};
+  const { id: user1Id } = user1;
   const { id: user2Id } = user2 || {};
+
+  if (!moves?.length) {
+    return gameBoard;
+  }
 
   const gameBoardCopy = [...gameBoard];
 
-  if (!moves || !moves.length) return gameBoardCopy;
+  moves.forEach(({ user_id, position }) => {
+    let mark = '';
 
-  moves.forEach(playerMove => {
-    const { user_id, position } = playerMove;
-    const x = user_id === user1Id && PLAYERS_MARKS.X;
-    const o = user_id === user2Id && PLAYERS_MARKS.O;
+    if (user_id === user1Id) {
+      mark = PLAYERS_MARKS.X;
+    } else if (user_id === user2Id) {
+      mark = PLAYERS_MARKS.O;
+    }
 
-    gameBoardCopy[position] = x || o || '';
+    gameBoardCopy[position] = mark;
   });
 
   return gameBoardCopy;

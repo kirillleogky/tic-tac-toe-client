@@ -2,12 +2,12 @@ import { ApolloProvider } from '@apollo/client';
 import type { AppProps } from 'next/app';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import App from '../src/components/App';
-import apolloClient from '../src/api/apollo-client';
-import theme from '../src/styles/theme';
-import GlobalAppStyles from '../src/styles/global';
+import App from '../components/App';
+import apolloClient from '../api/apollo-client';
+import theme from '../styles/theme';
+import GlobalAppStyles from '../styles/global';
 import 'react-toastify/dist/ReactToastify.css';
-import CustomToast from '../src/components/shared/CustomToast';
+import CustomToast from '../components/shared/CustomToast';
 const Root = (props: AppProps) => {
   return (
     <>

@@ -9,3 +9,15 @@ export const COLORS = {
   red: '#FF0000',
   white: '#FFF',
 };
+
+export const BorderRadius = {
+  extraSmall: '4px',
+  small: '8px',
+  large: '50px',
+  extraLarge: '60px',
+};
+
+export const IconSize = {
+  medium: '60px',
+  large: '140px',
+};

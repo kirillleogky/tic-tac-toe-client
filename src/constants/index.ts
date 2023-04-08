@@ -1,0 +1,1 @@
+export const INITIAL_GAME_BOARD_LENGTH = 9;

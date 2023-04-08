@@ -10,6 +10,7 @@ import XIcon from 'public/icons/x.svg';
 import OIcon from 'public/icons/o.svg';
 
 import { PLAYERS_MARKS } from '../../types/enums';
+import { IconSize } from '../../styles/variables';
 
 type BoardNavProps = {
   isSecondPlayerInGame: boolean;
@@ -42,7 +43,7 @@ const BoardNav = ({
         <>
           <Grid item minWidth="82px">
             {nextTurn === PLAYERS_MARKS.X && !winningCombo && (
-              <XIcon width="60px" />
+              <XIcon width={IconSize.medium} />
             )}
           </Grid>
           <Grid item>
@@ -62,7 +63,7 @@ const BoardNav = ({
           </Grid>
           <Grid item minWidth="82px">
             {nextTurn === PLAYERS_MARKS.O && !winningCombo && (
-              <OIcon width="60px" />
+              <OIcon width={IconSize.medium} />
             )}
           </Grid>
         </>

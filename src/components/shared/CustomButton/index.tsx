@@ -1,6 +1,8 @@
 import { Button, SxProps } from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 
+import { BorderRadius } from '../../../styles/variables';
+
 type ButtonProps = {
   label: string;
   startIcon?: JSX.Element;
@@ -30,6 +32,8 @@ const CustomButton = ({
   disabled,
   color,
 }: ButtonProps) => {
+  const handleClick = () => onClick && onClick();
+
   return isLoading ? (
     <LoadingButton
       loading={isLoading}
@@ -38,11 +42,11 @@ const CustomButton = ({
       size={size}
       disableRipple
       sx={{
-        borderRadius: 50,
+        borderRadius: BorderRadius.large,
         textTransform: 'none',
         ...customSxStyles,
       }}
-      onClick={() => onClick && onClick()}
+      onClick={handleClick}
       color={color}
     >
       Submit
@@ -54,11 +58,11 @@ const CustomButton = ({
       size={size}
       disableRipple
       sx={{
-        borderRadius: 50,
+        borderRadius: BorderRadius.large,
         textTransform: 'none',
         ...customSxStyles,
       }}
-      onClick={() => onClick && onClick()}
+      onClick={handleClick}
       disabled={disabled}
       color={color}
     >
