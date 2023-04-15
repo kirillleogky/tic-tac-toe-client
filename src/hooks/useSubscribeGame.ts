@@ -30,7 +30,7 @@ export const useSubscribeGame = (
         setTimeout(() => setPlayerWinner(winner as winnerType), 5000);
       }
 
-      if (turn && user1 && user2) {
+      if (turn && user1 && user2 !== undefined) {
         setGameBoard(getCurrentGameBoard(user1, user2, gameBoard, moves));
         setNextTurn(turn);
       }
